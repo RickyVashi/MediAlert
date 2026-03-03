@@ -25,12 +25,7 @@ const TWILIO_NUMBER = "whatsapp:+14155238886"; // Twilio Sandbox
 
 const schedule = [
   
-  // ===== HAIR CARE =====
-  { 
-    name: "Dess-DT Tablet (After Lunch)", 
-    cron: "30 14 * * *",
-    instructions: "Take 1 tablet after lunch with water."
-  },
+  // ===== HAIR CARE ====
   { 
     name: "Granflu-400 (Empty Stomach)", 
     cron: "30 7 * * 3,0",
@@ -116,6 +111,7 @@ schedule.forEach((item) => {
 });
 
 app.get("/", (req, res) => {
+  console.log("Ping received from cron-job at", new Date().toLocaleString());
   res.send("Medicine Reminder Running ✅");
 });
 
