@@ -28,7 +28,7 @@ const schedule = [
   // ===== HAIR CARE =====
   { 
     name: "Dess-DT Tablet (After Lunch)", 
-    cron: "20 14 * * *",
+    cron: "25 14 * * *",
     instructions: "Take 1 tablet after lunch with water."
   },
   { 
@@ -110,6 +110,8 @@ schedule.forEach((item) => {
     } catch (err) {
       console.log(err);
     }
+  }, {
+    timezone: "Asia/Kolkata"
   });
 });
 
