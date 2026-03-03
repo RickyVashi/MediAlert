@@ -28,7 +28,7 @@ const schedule = [
   // ===== HAIR CARE =====
   { 
     name: "Dess-DT Tablet (After Lunch)", 
-    cron: "25 14 * * *",
+    cron: "30 14 * * *",
     instructions: "Take 1 tablet after lunch with water."
   },
   { 
