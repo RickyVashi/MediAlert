@@ -19,6 +19,7 @@ let completionStats = {};
 // ===== FULL 12 ITEM SCHEDULE =====
 
 const schedule = [
+{ name: "Luliday Shampoo", cron: "15 17 * * *", period: "🌅 Morning" },
   { name: "Granflu-400", cron: "30 7 * * 3,0", period: "🌅 Morning" },
   { name: "Dess-DT Tablet", cron: "0 13 * * *", period: "🌞 Afternoon" },
   { name: "Tugain Scrub", cron: "15 8 * * 1,3,5", period: "🌅 Morning" },
