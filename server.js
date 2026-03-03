@@ -1,9 +1,11 @@
-
 const express = require("express");
 const cron = require("node-cron");
 const twilio = require("twilio");
 
 const app = express();
+
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
@@ -13,19 +15,9 @@ const client = twilio(accountSid, authToken);
 const YOUR_WHATSAPP = "whatsapp:+917990671943";
 const TWILIO_NUMBER = "whatsapp:+14155238886"; // Twilio Sandbox
 
-// ===== YOUR DOCTOR SCHEDULE =====
-
-// ===== UPDATED COMPLETE SCHEDULE (HAIR + FACE CARE) =====
-
-// ===== COMPLETE UPDATED SCHEDULE (HAIR + FACE CARE) =====
-
-// ===== COMPLETE UPDATED SCHEDULE (HAIR + FACE CARE) =====
-
-// ===== COMPLETE UPDATED SCHEDULE WITH HOW TO USE =====
+// ===== COMPLETE SCHEDULE =====
 
 const schedule = [
-  
-  // ===== HAIR CARE ====
   { 
     name: "Granflu-400 (Empty Stomach)", 
     cron: "30 7 * * 3,0",
@@ -36,45 +28,40 @@ const schedule = [
     cron: "0 13 * * *",
     instructions: "Take 1 tablet after lunch with water."
   },
-
   { 
     name: "Tugain Pre-Scalp Scrub",
     cron: "15 8 * * 1,3,5",
     instructions: "Apply on dry scalp. Massage gently. Leave 10–15 mins. Then wash with shampoo."
   },
-  
   { 
     name: "Luliday Shampoo",
     cron: "30 8 * * 1,3,5",
     instructions: "Apply on scalp. Leave for 5 minutes. Then rinse thoroughly."
   },
-
   { 
     name: "Fungigran Lotion",
     cron: "0 22 * * 1,3,5",
-    instructions: "Apply gently on scalp at night. Do not rub hard. Leave overnight."
+    instructions: "Apply gently on scalp at night. Leave overnight."
   },
   { 
     name: "Sculpro Lotion",
     cron: "0 22 * * 2,4,6",
-    instructions: "Apply gently on scalp at night. Do not rub. Leave overnight."
+    instructions: "Apply gently on scalp at night. Leave overnight."
   },
-
-  // ===== FACE CARE =====
   { 
     name: "Clearzit Facewash (Morning)",
     cron: "0 8 * * *",
-    instructions: "Wash face gently. Do not rub harshly."
+    instructions: "Wash face gently."
   },
   { 
     name: "Cerasoft OC Moisturizer",
     cron: "10 8 * * *",
-    instructions: "Apply small amount gently on face after washing."
+    instructions: "Apply small amount gently after washing."
   },
   { 
     name: "Raywin Sunscreen",
     cron: "45 9 * * *",
-    instructions: "Apply 15 mins before sun exposure. Use sufficient quantity."
+    instructions: "Apply 15 mins before sun exposure."
   },
   { 
     name: "Clearzit Facewash (Night)",
@@ -89,9 +76,11 @@ const schedule = [
   { 
     name: "Sebonia Serum",
     cron: "0 22 * * 1,3,5",
-    instructions: "Apply small amount at night. Do not mix with other cream immediately."
+    instructions: "Apply small amount at night."
   }
 ];
+
+// ===== AUTOMATIC REMINDERS =====
 
 schedule.forEach((item) => {
   cron.schedule(item.cron, async () => {
@@ -110,10 +99,39 @@ schedule.forEach((item) => {
   });
 });
 
+// ===== WHATSAPP BOT =====
+
+app.post("/whatsapp", async (req, res) => {
+  const incomingMsg = req.body.Body?.toLowerCase().trim();
+  const today = new Date().getDay(); // 0=Sun
+
+  if (incomingMsg === "today routine") {
+    let routine = "📅 Today's Routine:\n\n";
+
+    schedule.forEach((item) => {
+      const cronParts = item.cron.split(" ");
+      const dayPart = cronParts[4];
+
+      if (dayPart === "*" || dayPart.includes(today)) {
+        routine += `• ${item.name}\n`;
+      }
+    });
+
+    await client.messages.create({
+      from: TWILIO_NUMBER,
+      to: YOUR_WHATSAPP,
+      body: routine,
+    });
+  }
+
+  res.sendStatus(200);
+});
+
+// ===== KEEP ALIVE ROUTE =====
+
 app.get("/", (req, res) => {
   console.log("Ping received from cron-job at", new Date().toLocaleString());
   res.send("Medicine Reminder Running ✅");
 });
 
 app.listen(3000, () => console.log("Server started"));
-
