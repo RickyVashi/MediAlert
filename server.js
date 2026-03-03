@@ -28,6 +28,11 @@ const schedule = [
   // ===== HAIR CARE =====
   { 
     name: "Granflu-400 (Empty Stomach)", 
+    cron: "15 14 * * 3,0",
+    instructions: "Take 1 tablet with water on empty stomach. No food 30 mins before or after."
+  },
+  { 
+    name: "Granflu-400 (Empty Stomach)", 
     cron: "30 7 * * 3,0",
     instructions: "Take 1 tablet with water on empty stomach. No food 30 mins before or after."
   },
